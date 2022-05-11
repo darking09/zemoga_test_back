@@ -15,9 +15,9 @@ class UserRepository {
     this.userDao = new Users();
   }
 
-  async findOne(searchParameter : any) : Promise<IUser | null> {
+  async findOne(searchingParameter : any) : Promise<IUser | null> {
     try {
-      return await Users.findOne(sanitize(searchParameter)).exec();
+      return await Users.findOne(sanitize(searchingParameter)).exec();
     } catch (e) {
       return null;
     }
@@ -42,19 +42,27 @@ class UserRepository {
   }
 
   public setName(name:string) {
-    this.name = sanitize(name);
+    if (name !== '') {
+      this.name = sanitize(name);
+    }
   }
 
   public setExperience(experience:string) {
-    this.experience = sanitize(experience);
+    if (experience !== '') {
+      this.experience = sanitize(experience);
+    }
   }
 
   public setPicture(picture:string) {
-    this.picture = sanitize(picture);
+    if (picture !== '') {
+      this.picture = sanitize(picture);
+    }
   }
 
   public setTwitterHandle(twitterHandle:string) {
-    this.twitterHandle = sanitize(twitterHandle);
+    if (twitterHandle !== '') {
+      this.twitterHandle = sanitize(twitterHandle);
+    }
   }
 
   public setTweets(tweets:Array<ITweet>) {

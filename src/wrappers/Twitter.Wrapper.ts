@@ -9,12 +9,12 @@ class TwitterWrapper {
     this.client = new Client(config.TWITTER);
   }
 
-  async searchUserByHandle(handle:string) : Promise<any> {
-    const user = await this.client.users.findUserByUsername(handle);
+  async getUserByHandle(handle:string, options = {} as any, request_options = {} as any) : Promise<any> {
+    const user = await this.client.users.findUserByUsername(handle, options, request_options);
     return user.data;
   }
 
-  async userTimeline(twitterUser:any, options : any) : Promise<Array<any>> {
+  async getUserTimeline(twitterUser:any, options = {} as any) : Promise<Array<any>> {
     const timeline = await this.client.tweets.usersIdTweets(twitterUser.id,
       options
     );

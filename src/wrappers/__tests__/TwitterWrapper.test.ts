@@ -6,7 +6,7 @@ describe('TwitterWrapper unit tests', () => {
     const twitterWrapper = new TwitterWrapper();
 
     //Act
-    const twitterUser = await twitterWrapper.searchUserByHandle('jack');
+    const twitterUser = await twitterWrapper.getUserByHandle('jack');
 
     //Assert
     expect(twitterUser.id).not.toBeUndefined;
@@ -26,7 +26,7 @@ describe('TwitterWrapper unit tests', () => {
     };
 
     //Act
-    const timeline = await twitterWrapper.userTimeline(twitterUser, options);
+    const timeline = await twitterWrapper.getUserTimeline(twitterUser, options);
 
     //Assert
     expect(timeline).toHaveLength(5)

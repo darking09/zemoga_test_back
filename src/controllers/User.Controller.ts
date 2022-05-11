@@ -9,7 +9,7 @@ class UserController {
   twitterOptions : any = {
     "expansions": ["author_id"],
     "tweet.fields": ['created_at','author_id'],
-    "user.fields": ['username'],
+    "user.fields": ['username', 'profile_image_url'],
     "media.fields": 'url',
     "max_results": 5
   };
@@ -21,63 +21,62 @@ class UserController {
 
   async addOrUpdateUser(...args : Array<any>) : Promise<IUser> {
     const [
-      handle,
-      name,
-      experience
+      handle = '',
+      name = '',
+      experience = ''
     ] = args;
 
-    const twitterUser : IUser | null= await this.getUser(handle);
+    const twitterUser : IUser | null = await this.getUser(handle);
 
-    if (twitterUser) {
+    if (twitterUser && twitterUser !== null) {
       this.userRepository.setUser(twitterUser);
-    }
-
-    if (!twitterUser) {
-      await this.searchUserTweets(handle);
     }
 
     this.userRepository.setName(name);
     this.userRepository.setTwitterHandle(handle);
     this.userRepository.setExperience(experience);
 
+    if (twitterUser === null) {
+      const twitterUser = await this.getTwitterUser(handle);
+      this.userRepository.setPicture(twitterUser.profile_image_url as string);
+      const timeline = await this.getTimeline(twitterUser);
+      this.userRepository.setTweets(timeline);
+    }
+
     return await this.userRepository.saveOrUpdate();
   }
 
   async getUser(parameterOfSerching : string) : Promise<any | null> {
-    const tUserFindOne = await this.userRepository.findOne({handle: parameterOfSerching});
+    // Search out the Twitter user by the handle
+    let foundTwitterUser = await this.userRepository.findOne({handle: parameterOfSerching});
 
-    if (tUserFindOne) {
-      return tUserFindOne;
+    if (foundTwitterUser) {
+      return foundTwitterUser;
     }
 
-    const tUserFindById = await this.userRepository.findOne(parameterOfSerching);
+    // Search out the Twitter user by ID
+    foundTwitterUser = await this.userRepository.findOne(parameterOfSerching);
 
-    if (tUserFindById) {
-      return tUserFindById;
+    if (foundTwitterUser) {
+      return foundTwitterUser;
     }
 
     return null;
   }
 
-  private async searchUserTweets(handle : string) : Promise<void> {
-    const twitterUser = await this.searchUser(handle);
+  private async getTimeline(twitterUser : any) : Promise<Array<ITweet>> {
+    const tweets = await this.twitterWrapper.getUserTimeline(twitterUser, this.twitterOptions);
 
-    const tweets = await this.twitterWrapper.userTimeline(twitterUser, this.twitterOptions);
-
-    this.userRepository.setTweets(tweets.map(t => ({
-      picture: '',
-      name: '',
-      handle: '',
+    return tweets.map(t => ({
+      picture: this.userRepository.getPicture(),
+      name: this.userRepository.getName(),
+      handle: this.userRepository.getTwitterHandle(),
       content: t.text
-    })));
+    }));
   }
 
-  private async searchUser(handle : string): Promise<any> {
-    const twitterUser = await this.twitterWrapper.searchUserByHandle(handle);
-
-    this.userRepository.setPicture(twitterUser.profile_image_url);
-
-    return twitterUser;
+  private async getTwitterUser(handle : string) : Promise<any> {
+    return await this.twitterWrapper.getUserByHandle(handle, {'user.fields': ['profile_image_url']});
   }
 }
 
