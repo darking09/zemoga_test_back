@@ -12,6 +12,8 @@ RUN yarn install
 
 COPY . .
 
+CMD ["yarn", "dev"]
+
 FROM zemoga_test_back as production
 
 ENV NODE_PATH=./build

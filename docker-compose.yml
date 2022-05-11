@@ -33,12 +33,12 @@ services:
       - ./nodemon.json:/home/node/app/nodemon.json
       - ./.babelrc:/home/node/app/.babelrc
       - ./tsconfig.json:/home/node/app/tsconfig.json
+      - /home/node/app/node_modules
     expose:
       - '8080'
     ports:
       - '8080:8080'
     #command: tail -f /dev/null
-    command: yarn dev
     depends_on:
       - mongo
 volumes:
