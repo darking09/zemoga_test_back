@@ -36,7 +36,7 @@ class UserController {
     this.userRepository.setTwitterHandle(handle);
     this.userRepository.setExperience(experience);
 
-    if (twitterUser === null) {
+    if (!twitterUser || twitterUser === null) {
       const twitterUser = await this.getTwitterUser(handle);
       this.userRepository.setPicture(twitterUser.profile_image_url as string);
       const timeline = await this.getTimeline(twitterUser);

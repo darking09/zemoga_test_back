@@ -7,6 +7,11 @@ class ExpressWrapper {
     this.port = port;
   }
 
+  post(path: string, callback:any) {
+    this.server.post(path, callback);
+    return this;
+  }
+
   get(path: string, callback:any) {
     this.server.get(path, callback);
     return this;
