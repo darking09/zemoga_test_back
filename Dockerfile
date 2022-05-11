@@ -1,4 +1,8 @@
-FROM node:14.19.1 as zemoga_test_back
+FROM node:14.19.1-buster as zemoga_test_back
+
+RUN apt-get update
+
+RUN apt-get install libcurl4-openssl-dev
 
 WORKDIR /home/node/app
 
