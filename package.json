@@ -9,7 +9,9 @@
     "build": "tsc -p .",
     "dev": "nodemon src/index.ts",
     "lint": "eslint . --ext .ts",
-    "test": "jest --testEnvironment=node --runInBand ./src"
+    "test": "NODE_ENV=test jest --forceExit",
+    "test:watch": "NODE_ENV=test jest  --watchAll",
+    "coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "^7.17.9",

@@ -1,3 +1,4 @@
+import './db/database';
 import cors from 'cors';
 import morgan from 'morgan';
 import * as utils from './utils';
@@ -13,7 +14,7 @@ const middlewares = [
   express.json()
 ];
 
-const server = new ExpressWrapper(port);
+const server = new ExpressWrapper(port, express);
 
 server.loadMiddlewares(middlewares);
 

@@ -1,11 +1,9 @@
-import express from 'express';
-
 class ExpressWrapper {
   server;
   port: number;
 
-  constructor(port:number){
-    this.server = express();
+  constructor(port:number, server:any) {
+    this.server = server();
     this.port = port;
   }
 
