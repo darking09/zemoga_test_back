@@ -18,3 +18,7 @@ connection.on('error', err => {
   console.log(err);
   process.exit(0);
 });
+
+export async function connectToDatabase() {
+  return connection;
+}

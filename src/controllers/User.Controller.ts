@@ -19,12 +19,16 @@ class UserController {
     this.twitterWrapper = new TwitterWrapper();
   }
 
-  async addOrUpdateUser(...args : Array<any>) : Promise<IUser> {
+  async addOrUpdateUser(...args : Array<any>) : Promise<IUser | null> {
     const [
       handle = '',
       name = '',
       experience = ''
     ] = args;
+
+    if (handle === '') {
+      return null;
+    }
 
     const twitterUser : IUser | null = await this.getUser(handle);
 
@@ -39,6 +43,7 @@ class UserController {
     if (!twitterUser || twitterUser === null) {
       const twitterUser = await this.getTwitterUser(handle);
       this.userRepository.setPicture(twitterUser.profile_image_url as string);
+
       const timeline = await this.getTimeline(twitterUser);
       this.userRepository.setTweets(timeline);
     }
@@ -46,16 +51,21 @@ class UserController {
     return await this.userRepository.saveOrUpdate();
   }
 
-  async getUser(parameterOfSerching : string) : Promise<any | null> {
+  async getUser(parameterOfSerching : string |undefined) : Promise<any | null> {
+
+    if (!parameterOfSerching) {
+      throw "Not user found";
+    }
+
     // Search out the Twitter user by the handle
-    let foundTwitterUser = await this.userRepository.findOne({handle: parameterOfSerching});
+    let foundTwitterUser = await this.userRepository.findOne({twitterHandle: parameterOfSerching});
 
     if (foundTwitterUser) {
       return foundTwitterUser;
     }
 
     // Search out the Twitter user by ID
-    foundTwitterUser = await this.userRepository.findOne(parameterOfSerching);
+    foundTwitterUser = await this.userRepository.findById(parameterOfSerching as string );
 
     if (foundTwitterUser) {
       return foundTwitterUser;

@@ -41,7 +41,7 @@ describe("UserController", () => {
     await userController.addOrUpdateUser(handle, name, experience)
 
     //Act
-    const updatedUser = await userController.addOrUpdateUser('', nameToBeUpdating);
+    const updatedUser = await userController.addOrUpdateUser(handle, nameToBeUpdating);
 
     //Assert
     expect(updatedUser.name).toEqual(nameToBeUpdating)

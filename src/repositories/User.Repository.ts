@@ -73,6 +73,11 @@ class UserRepository {
 
   public setUser(user:IUser) {
     this.userDao = user;
+    this.tweets = user.tweets as Array<ITweet>;
+    this.twitterHandle = user.twitterHandle;
+    this.experience = user.experience;
+    this.picture = user.picture;
+    this.name = user.name;
   }
 
   public getName() : string {
