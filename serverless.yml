@@ -1,0 +1,22 @@
+service: zemoga-api
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  api:
+    handler: src/user.handler
+    events:
+      - httpApi: GET /api/user/{user_id}
+      - httpApi: POST /api/user
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
